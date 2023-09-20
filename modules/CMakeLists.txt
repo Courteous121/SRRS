@@ -1,0 +1,6 @@
+add_subdirectory(calibrator)
+#add_subdirectory(decider)
+add_subdirectory(detector)
+add_subdirectory(locator)
+add_subdirectory(radar)
+add_subdirectory(target)

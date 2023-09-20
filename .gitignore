@@ -1,0 +1,9 @@
+.vscode
+build
+*.avi
+*.mp4
+*.csv
+test
+*.engine
+result_save
+Loadings

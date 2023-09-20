@@ -1,0 +1,8 @@
+add_subdirectory(camera)
+add_subdirectory(CommandParser)
+add_subdirectory(lidar)
+add_subdirectory(parameter)
+add_subdirectory(referee)
+add_subdirectory(sort)
+add_subdirectory(StorageMat)
+add_subdirectory(yolox)

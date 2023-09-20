@@ -1,0 +1,4 @@
+Log file created at: 2023/05/18 14:55:57
+Running on machine: robotlab-System-Product-Name
+Log line format: [IWEF]mmdd hh:mm:ss.uuuuuu threadid file:line] msg
+E0518 14:55:57.553575 26011 MVCAMAPI.cpp:350] CameraInit Failed, err:-18,Version:2.1.0.37,FriendlyName:MV-UB31#0,SN:029041210231

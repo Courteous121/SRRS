@@ -1,0 +1,23 @@
+%YAML:1.0
+---
+mainmono: 0
+othermono: 2
+islidar: 1
+isvideo: 0
+ismainmo: 1
+isbasemo: 0
+mainno: "040150220544"
+otherno: "028082510169"
+dartno: "042103120257"
+lidarno: "os-122139001023.local"
+video_path: "/home/robotlab/SRRS/Loadings/3-1.mp4"
+calibrationmap_path: "/home/robotlab/SRRS/Loadings/calibration_2map.png"
+redmap_path: "/home/robotlab/SRRS/Loadings/red_map.png"
+bluemap_path: "/home/robotlab/SRRS/Loadings/blue_map.png"
+carengine_path: "/home/robotlab/SRRS/Loadings/mozu.engine"
+armorengine_path: "/home/robotlab/SRRS/Loadings/armor.engine"
+meta_path: "/home/robotlab/SRRS/Loadings/meta.json"
+area_path: "/home/robotlab/SRRS/Loadings/area.png"
+btree_path: "/home/robotlab/SRRS/Loadings/BehaviorTreev3.xml"
+videosave_path: /media/robotlab/data/SaveVideo
+depthmatsave_path: /media/robotlab/data/SaveFile/
