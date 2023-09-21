@@ -30,6 +30,8 @@
 
 **雷达开源图片p1**
 
+![img](https://github.com/Courteous121/SRRS/blob/master/Radar_pic/p1.png)
+
 ### 3.2编译、安装方式
 
 在以上软硬件环境下git clone源码，在SRRS文件夹中创建build文件，进入build文件打开终端，分别执行：
@@ -60,6 +62,8 @@ cmake ..
 
 **雷达开源图片p2**
 
+![img](https://github.com/Courteous121/SRRS/blob/master/Radar_pic/p2.png)
+
 ### 3.5原理与理论支持
 
 #### 3.5.1整体思路
@@ -78,6 +82,8 @@ cmake ..
 | Car       | 0.50：0.95 | 0.846   | 0.873      |
 
 **雷达开源图片p3**
+
+![img](https://github.com/Courteous121/SRRS/blob/master/Radar_pic/p3.png)
 
 由于使用的是DJI ROCO的高清数据集进行训练，与我们工业相机获取的图像差距还是比较大，因此目标检测的实际结果并没有想象中那么好，特别是仰视或者俯视的视角下，即使在眼前，也可能检测不出来。
 
@@ -115,15 +121,21 @@ cmake ..
 
 **雷达开源图片p4**
 
+![img](https://github.com/Courteous121/SRRS/blob/master/Radar_pic/p4.png)
+
 实际效果如下图所示：
 
 对于残影物体能够锁定：
 
 **雷达开源图片p5**
 
+![img](https://github.com/Courteous121/SRRS/blob/master/Radar_pic/p5.png)
+
 对于被障碍物阻挡的物体也可以若干帧的锁定：
 
 **雷达开源图片p6**
+
+![img](https://github.com/Courteous121/SRRS/blob/master/Radar_pic/p6.png)
 
 #### 3.5.5小地图映射（将检测到的机器人映射到小地图上）
 
@@ -136,10 +148,12 @@ cmake ..
 这种方法对于己方半场的目标的映射效果很好，但对于敌方半场的映射效果误差很大，而且物体在上坡时或者靠在高地边缘时，映射也会不稳定。下图为映射效果图：
 
 **雷达开源图片p7**
+![img](https://github.com/Courteous121/SRRS/blob/master/Radar_pic/p7.png)
 
 而且这个方法还有一个很大的问题，就是它在比赛开始前要标定3*4=12个点，赛场上时间紧张，很难拿出这么多时间进行标定，所以这个方法在后期作为我们的备用映射方法，当激光雷达故障时使用。下图为需要标定的点：
 
 **雷达开源图片p8**
+![img](https://github.com/Courteous121/SRRS/blob/master/Radar_pic/p8.png)
 
 ##### 3.5.5.2激光雷达k聚类映射法
 
@@ -154,20 +168,24 @@ $$Z_{c}\left[\begin{array}{l} u \\ v \\ 1 \end{array}\right]=\left[\begin{array}
 其中$$\left(X_{l}, Y_{l}, Z_{l}\right)$$为点云在激光雷达坐标系下的笛卡尔坐标，其中$$M_{1}$$为相机的内参矩阵，$$M_{2}$$为由相机到激光雷达的外参矩阵。我们使用Autoware的标定工具包，根据棋盘标定法，联合标定激光雷达与单目相机，从而获得内参与外参矩阵：
 
 **雷达开源图片p9**
+![img](https://github.com/Courteous121/SRRS/blob/master/Radar_pic/p9.png)
 
 而$$\left(u,v\right)$$为点云投影到图像后的像素坐标。我们会新建一个与相机图像长宽一样的矩阵，并将计算出来的深度信息$$Z_{c}$$存储到对应的像素中，如果有多个点云的像素坐标一致，则取$$Z_{c}$$小的那个。随后我们便能得到一张深度图。对于每一帧的检测，都会用该帧的信息制作一张深度图。深度图效果如下（为了便于理解，我们按照深度信息大小对圆点进行了缩放，实际深度图需要肉眼仔细分辨才有此效果）：
 
 **雷达开源图片p10**
+![img](https://github.com/Courteous121/SRRS/blob/master/Radar_pic/p10.png)
 
 1. **深度信息处理**
 
 **雷达开源图片p11**
+![img](https://github.com/Courteous121/SRRS/blob/master/Radar_pic/p11.png)
 
 我们设计如上图的模型：激光束从机器人前方打过去，会碰到机器人前方的障碍物(掩体、台阶)，然后才打到机器人身上，随后有些光束没打到机器人，但会打到机器人身后的背景。因此激光雷达获得的点云应该分为三堆，分别在障碍物、机器人、背景的附近，因此可以把该问题抽象为一维的聚类问题。
 
 因此我们使用K聚类处理深度信息。我们令K为3，分别代表前景(机器人前方矮小的障碍物)、中景(机器人)、背景的深度值(机器人背后的障碍物)。首先计算检测框内点云的深度平均值mean_range，以此值为中景的初值(因为大部分点云还是在机器人附近的)，前景与背景的初值为中景初值+1.5与中景初值-1.5(单位为m，1.5是参考制作规范中机器人的限制尺寸得到的经验值)。
 
 **雷达开源图片p12**
+![img](https://github.com/Courteous121/SRRS/blob/master/Radar_pic/p12.png)
 
 为了进一步优化算法速度，我们将机器人的检测框均匀地分为六个格子，其中左上角与右上角的格子大部分为背景信息，可以不纳入计算，另外的四个格子可以分成三个线程单独进行聚类计算，最后再汇总结果。而算法迭代结束的条件为：当迭代次数超过一定次数或者前后两次结果之差低于0.001停止迭代。
 
@@ -188,7 +206,7 @@ $$Z_{\text {represent }}\left[\begin{array}{l} a \\ b \\ 1 \end{array}\right]=\l
 其中$$\left(a,b\right)$$为物体检测框的中点的像素坐标，$$Z_{\text {represent }}$$由上文的K聚类获得，而$$M_{1}$$和上条公式一样，是指内参矩阵，而$$M_{3}$$则是指由相机坐标系到世界坐标系的外参矩阵，通过开场标定并使用PNP算法得到。具体标定的点如下图黑点：
 
 **雷达开源图片p13**
-
+![img](https://github.com/Courteous121/SRRS/blob/master/Radar_pic/p13.png)
 实际的定位效果很好，受到遮挡时仍然能稳定识别与定位：参考网盘链接压缩包中名为“定位效果”的视频：
 
 链接：https://pan.baidu.com/s/1HrjQNzdx1k9zInmWbc8xXg?pwd=e37k 
@@ -208,11 +226,12 @@ $$Z_{\text {represent }}\left[\begin{array}{l} a \\ b \\ 1 \end{array}\right]=\l
 雷达的通讯包有：
 
 **雷达开源图片p14**
+![img](https://github.com/Courteous121/SRRS/blob/master/Radar_pic/p14.png)
 
 而操作手画面上的UI有（左侧的EVENTS和SUGGESTIONS和上方的盾牌与剑）：
 
 **雷达开源图片p15**
-
+![img](https://github.com/Courteous121/SRRS/blob/master/Radar_pic/p15.png)
 ##### 3.5.6.3决策原则
 
 我们的决策大多是基于时间，比如说落矿倒计时，首次大小能量机关的开启倒计时，前哨无敌时间解除的提醒。这些提醒与倒计时，基本只要比赛时间到便可以触发。
@@ -232,10 +251,12 @@ UI设计方面，我们使用了QT5，在本赛季，一共开发了两个版本
 ##### 1.主页面
 
 **雷达开源图片p16**
+![img](https://github.com/Courteous121/SRRS/blob/master/Radar_pic/p16.png)
 
 **第一代UI**
 
 **雷达开源图片p17**
+![img](https://github.com/Courteous121/SRRS/blob/master/Radar_pic/p17.png)
 
 **第二代UI**
 
@@ -244,40 +265,48 @@ UI设计方面，我们使用了QT5，在本赛季，一共开发了两个版本
 其中第一版的血量实时显示针对的是敌我地面单位，当血量最低时，还会用框框住，提醒云台手。但赛后云台手反应很少留意这个血量问题（因为裁判系统反应得有些迟钝，时效性不高，且操作手会自己注意血量），所以在第二版UI中我们改成了显示哨兵与建筑的血量，时刻反应赛场胜败的关键。
 
 **雷达开源图片p18**
+![img](https://github.com/Courteous121/SRRS/blob/master/Radar_pic/p18.png)
 
 落矿、打符倒计时提醒是云台手最喜欢的功能，它出现在决策窗口，效果如下图。因为非常有用，所以第二版中保留了此功能。
 
 **雷达开源图片p19**
+![img](https://github.com/Courteous121/SRRS/blob/master/Radar_pic/p19.png)
 
 第一版时，矿石、神符、基地血量、前哨站血量、哨兵血量的状态显示在决策窗口右边，如上图所示，他们会根据实际情况显示不同的颜色或者亮起，一些有防御增益或者虚拟护盾的单位，其图片中还会有一个盾牌的图案。第二版时，由于矿石和神符的状态显示过于鸡肋，我们删除了这两个显示。
 
 落矿区域放大窗口其实就是在右上角开一个窗口，让云台手能够更清楚地看到矿区在闪哪一个灯光，落矿前几秒才会自动打开，落矿后就会自动关闭，不影响画面。
 
 **雷达开源图片p20**
+![img](https://github.com/Courteous121/SRRS/blob/master/Radar_pic/p20.png)
 
 ##### 2.配置页面
 
 **雷达开源图片p21**
+![img](https://github.com/Courteous121/SRRS/blob/master/Radar_pic/p21.png)
 
 **雷达开源图片p22**
+![img](https://github.com/Courteous121/SRRS/blob/master/Radar_pic/p22.png)
 
 ##### 3.相机调整页面
 
 相机调整页面主要是定义了若干个滑块，用于在场上实时调整曝光、对比度、gamma等参数。第二版的UI新增了可以多个相机可调的功能。由于飞镖观测相机只在飞镖发射时记录画面，并不会在主页面显示，所以为了调节它，在打开调节页面后，它会在右下角弹出一个弹窗便于观察调节效果。
 
 **雷达开源图片p23**
+![img](https://github.com/Courteous121/SRRS/blob/master/Radar_pic/p23.png)
 
 ##### 4.标定页面
 
 标定页面用于标定场上若干个点，用于初始化外参矩阵。得到的点通过PNP计算出外参矩阵。
 
 **雷达开源图片p24**
+![img](https://github.com/Courteous121/SRRS/blob/master/Radar_pic/p24.png)
 
 我们不仅把UI定义为赛场上展示的窗口，同时还把它定义为调试用的上位机，所以UI的页面切换与按钮互动的逻辑非常严谨，不会造成冲突问题。到了赛季中后期，基本使用UI进行调试，因为它内置的功能很多。
 
 ### 3.6软件架构
 
 **雷达开源图片p25**
+![img](https://github.com/Courteous121/SRRS/blob/master/Radar_pic/p25.png)
 
 ### 3.7未来优化方向
 
