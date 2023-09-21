@@ -62,7 +62,7 @@ cmake ..
 
 **雷达开源图片p2**
 
-![img](https://github.com/Courteous121/SRRS/blob/master/Radar_pic/p2.png)
+![img](https://github.com/Courteous121/SRRS/blob/master/Radar_pic/p2.jpg)
 
 ### 3.5原理与理论支持
 
@@ -173,11 +173,12 @@ $$Z_{c}\left[\begin{array}{l} u \\ v \\ 1 \end{array}\right]=\left[\begin{array}
 而$$\left(u,v\right)$$为点云投影到图像后的像素坐标。我们会新建一个与相机图像长宽一样的矩阵，并将计算出来的深度信息$$Z_{c}$$存储到对应的像素中，如果有多个点云的像素坐标一致，则取$$Z_{c}$$小的那个。随后我们便能得到一张深度图。对于每一帧的检测，都会用该帧的信息制作一张深度图。深度图效果如下（为了便于理解，我们按照深度信息大小对圆点进行了缩放，实际深度图需要肉眼仔细分辨才有此效果）：
 
 **雷达开源图片p10**
-![img](https://github.com/Courteous121/SRRS/blob/master/Radar_pic/p10.png)
+![img](https://github.com/Courteous121/SRRS/blob/master/Radar_pic/p10.jpg)
 
 1. **深度信息处理**
 
 **雷达开源图片p11**
+
 ![img](https://github.com/Courteous121/SRRS/blob/master/Radar_pic/p11.png)
 
 我们设计如上图的模型：激光束从机器人前方打过去，会碰到机器人前方的障碍物(掩体、台阶)，然后才打到机器人身上，随后有些光束没打到机器人，但会打到机器人身后的背景。因此激光雷达获得的点云应该分为三堆，分别在障碍物、机器人、背景的附近，因此可以把该问题抽象为一维的聚类问题。
@@ -226,12 +227,12 @@ $$Z_{\text {represent }}\left[\begin{array}{l} a \\ b \\ 1 \end{array}\right]=\l
 雷达的通讯包有：
 
 **雷达开源图片p14**
-![img](https://github.com/Courteous121/SRRS/blob/master/Radar_pic/p14.png)
+![img](https://github.com/Courteous121/SRRS/blob/master/Radar_pic/p14.jpg)
 
 而操作手画面上的UI有（左侧的EVENTS和SUGGESTIONS和上方的盾牌与剑）：
 
 **雷达开源图片p15**
-![img](https://github.com/Courteous121/SRRS/blob/master/Radar_pic/p15.png)
+![img](https://github.com/Courteous121/SRRS/blob/master/Radar_pic/p15.jpg)
 ##### 3.5.6.3决策原则
 
 我们的决策大多是基于时间，比如说落矿倒计时，首次大小能量机关的开启倒计时，前哨无敌时间解除的提醒。这些提醒与倒计时，基本只要比赛时间到便可以触发。
